@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Plant extends SlimefunItem {
 
-    private static final int food = 2;
+    private final int food = 2;
     boolean edible;
 
     public Plant(Category category, ItemStack item, String name, RecipeType recipeType, boolean edible, ItemStack[] recipe) {
@@ -21,7 +21,7 @@ public class Plant extends SlimefunItem {
     }
 
     public void restoreHunger(Player p) {
-        int level = p.getFoodLevel() + (int) food;
+        int level = p.getFoodLevel() + food;
         p.setFoodLevel(level > 20 ? 20 : level);
         p.setSaturation(food);
     }
