@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
 
 public class PlantListener implements Listener {
@@ -66,7 +67,7 @@ public class PlantListener implements Listener {
 
     @EventHandler
     public void onEquip(InventoryClickEvent e) {
-        if (e.getSlotType() != SlotType.ARMOR)
+        if (e.getSlotType() != InventoryType.SlotType.ARMOR)
             return;
         SlimefunItem item = SlimefunItem.getByItem(e.getCurrentItem());
         if (item != null && item instanceof Plant)
