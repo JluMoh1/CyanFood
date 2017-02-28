@@ -59,8 +59,7 @@ public class Berry {
     }
 
     public boolean isSoil(Material type) {
-        List<Material> soils = Arrays.asList(Material.GRASS, Material.DIRT);
-        return soils.contains(type);
+        return Arrays.asList(Material.GRASS, Material.DIRT).contains(type);
     }
 
 }
