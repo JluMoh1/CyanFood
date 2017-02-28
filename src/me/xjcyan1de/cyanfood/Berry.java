@@ -10,10 +10,10 @@ import java.util.List;
 
 public class Berry {
 
-    ItemStack item;
-    String name;
-    PlantData data;
-    PlantType type;
+    private final ItemStack item;
+    private String name;
+    private final PlantData data;
+    private final PlantType type;
 
     public Berry(String name, PlantType type, PlantData data) {
         this.name = name;
