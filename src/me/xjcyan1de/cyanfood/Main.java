@@ -19,6 +19,7 @@ public class Main extends JavaPlugin {
     public FileConfiguration config;
     public String prefix;
     public Category category_plants, category_drinks, category_food;
+    public PlantListener plantListener;
 
     public ItemStack getSkull(MaterialData material, String texture) {
         try {
@@ -43,6 +44,7 @@ public class Main extends JavaPlugin {
             saveDefaultConfig();
             category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
             registerItems();
+            plantListener = new PlantListener(this);
         } catch (Exception ex) {
             server.broadcastMessage("Ошибка запуска CyanFood " + ex.getLocalizedMessage());
         }
