@@ -36,13 +36,7 @@ public class PlantListener implements Listener {
                         if (((Plant) item).isEdible()) {
                             ((Plant) item).restoreHunger(e.getPlayer());
                             e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    e.getPlayer().getInventory().setItemInMainHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
-                                }
-                            }, 0L);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInMainHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInMainHand(), 1)), 0L);
                         }
                     }
                 }
@@ -55,13 +49,7 @@ public class PlantListener implements Listener {
                         if (((Plant) item).isEdible()) {
                             ((Plant) item).restoreHunger(e.getPlayer());
                             e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    e.getPlayer().getInventory().setItemInOffHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
-                                }
-                            }, 0L);
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInOffHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInOffHand(), 1)), 0L);
                         }
                     }
                 }
