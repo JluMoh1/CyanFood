@@ -68,9 +68,10 @@ public class PlantListener implements Listener {
 
     @EventHandler
     public void onEquip(InventoryClickEvent e) {
-        SlimefunItem item = SlimefunItem.getByItem(e.getCursor());
-        if (item != null && (item instanceof Plant)) {
-           //Я НЕ ПОНИМАЮ!11!!1!!1!1
-        }
+        if (e.getSlotType() != SlotType.ARMOR)
+            return;
+        SlimefunItem item = SlimefunItem.getByItem(e.getCurrentItem());
+        if (item != null && item instanceof Plant)
+            e.setCancelled(true);
     }
 }
