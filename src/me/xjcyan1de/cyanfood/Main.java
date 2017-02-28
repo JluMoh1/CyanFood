@@ -44,7 +44,7 @@ public class Main extends JavaPlugin {
             category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
             registerItems();
         } catch (Exception ex) {
-            if (!(ex.getLocalizedMessage() == null))
+            if ((ex.getLocalizedMessage() != null))
                 server.broadcastMessage("Ошибка запуска CyanFood " + ex.getLocalizedMessage());
         }
     }
