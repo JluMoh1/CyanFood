@@ -55,8 +55,6 @@ public class PlantListener implements Listener {
                 }
                 break;
             }
-            default:
-                break;
         }
     }
 
