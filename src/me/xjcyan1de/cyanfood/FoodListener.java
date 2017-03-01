@@ -35,22 +35,16 @@ public class FoodListener implements Listener {
             case HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
                 if (item != null && item instanceof Plant) {
-                    if (e.getClickedBlock() == null) {
+                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL"))
                         eatPlant(e.getPlayer(), item);
-                    } else if (!BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
-                        eatPlant(e.getPlayer(), item);
-                    }
                 }
                 break;
             }
             case OFF_HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
                 if (item != null && item instanceof Plant) {
-                    if (e.getClickedBlock() == null) {
+                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL"))
                         eatPlant(e.getPlayer(), item);
-                    } else if (!BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
-                        eatPlant(e.getPlayer(), item);
-                    }
                 }
                 break;
             }
