@@ -8,6 +8,7 @@ import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,26 +34,22 @@ public class FoodListener implements Listener {
         switch (hand) {
             case HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
-                if (item != null) {
-                    if (item instanceof Plant && !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
-                        if (((Plant) item).isEdible()) {
-                            ((Plant) item).restoreHunger(e.getPlayer());
-                            e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInMainHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInMainHand(), 1)), 0L);
-                        }
+                if (item != null && item instanceof Plant) {
+                    if (e.getClickedBlock() == null) {
+                        eatPlant(e.getPlayer(), item);
+                    } else if (!BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
+                        eatPlant(e.getPlayer(), item);
                     }
                 }
                 break;
             }
             case OFF_HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
-                if (item != null) {
-                    if (item instanceof Plant && !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
-                        if (((Plant) item).isEdible()) {
-                            ((Plant) item).restoreHunger(e.getPlayer());
-                            e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInOffHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInOffHand(), 1)), 0L);
-                        }
+                if (item != null && item instanceof Plant) {
+                    if (e.getClickedBlock() == null) {
+                        eatPlant(e.getPlayer(), item);
+                    } else if (!BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
+                        eatPlant(e.getPlayer(), item);
                     }
                 }
                 break;
@@ -78,6 +75,14 @@ public class FoodListener implements Listener {
             if (item2 != null && item2 instanceof Plant) {
                 if (e.getSlotType() == InventoryType.SlotType.ARMOR) e.setCancelled(true);
             }
+        }
+    }
+
+    private void eatPlant(Player p, SlimefunItem item) {
+        if (((Plant) item).isEdible()) {
+            ((Plant) item).restoreHunger(p);
+            p.getPlayer().getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> p.getInventory().setItemInMainHand(InvUtils.decreaseItem(p.getInventory().getItemInMainHand(), 1)), 0L);
         }
     }
 }
