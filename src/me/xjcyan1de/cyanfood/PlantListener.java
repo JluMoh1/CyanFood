@@ -83,7 +83,7 @@ public class PlantListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         ItemStack item = harvestPlant(e.getClickedBlock());
-        if (item != null ) {
+        if (item != null) {
             e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.STEP_SOUND, Material.LEAVES);
             e.getClickedBlock().getWorld().dropItemNaturally(e.getClickedBlock().getLocation(), item);
         }

@@ -23,7 +23,7 @@ public class FoodListener implements Listener {
         main.server.getPluginManager().registerEvents(this, main);
     }
 
-    @EventHandler(priority= EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onUse(final ItemUseEvent e) {
         if (e.getPlayer().getFoodLevel() >= 20) return;
 
@@ -59,10 +59,11 @@ public class FoodListener implements Listener {
         }
     }
 
-    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlace(BlockPlaceEvent e) {
         SlimefunItem item = SlimefunItem.getByItem(e.getItemInHand());
-        if (item != null && (item instanceof Plant) && e.getItemInHand().getType() == Material.SKULL_ITEM) e.setCancelled(true);
+        if (item != null && (item instanceof Plant) && e.getItemInHand().getType() == Material.SKULL_ITEM)
+            e.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

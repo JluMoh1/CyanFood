@@ -1,0 +1,54 @@
+package me.xjcyan1de.cyanfood;
+
+import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.Item.CustomItem;
+import me.mrCookieSlime.CSCoreLibPlugin.general.World.CustomSkull;
+import me.mrCookieSlime.Slimefun.Lists.RecipeType;
+import me.mrCookieSlime.Slimefun.Objects.Category;
+import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
+
+import static me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem.getItem;
+
+public class ItemRegistry {
+    private final Main main;
+
+    public ItemRegistry(Main main) {
+        this.main = main;
+        main.category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
+        registerItems();
+    }
+
+    private void registerItems() {
+        registerBerry("GRAPE", PlantType.BUSH, new PlantData("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVlOTc2NDliZDk5OTk1NTQxM2ZjYmYwYjI2OWM5MWJlNDM0MmIxMGQwNzU1YmFkN2ExN2U5NWZjZWZkYWIwIn19fQ=="), "&cВиноград", "&cВиноградный куст");
+    }
+
+    private ItemStack getSkull(MaterialData material, String texture) {
+        try {
+            if (texture.equals("NO_SKULL_SPECIFIED")) return material.toItemStack(1);
+            return CustomSkull.getItem(texture);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return material.toItemStack(1);
+        }
+    }
+
+    private ItemStack getSkull(Material material, String texture) {
+        return getSkull(new MaterialData(material), texture);
+    }
+
+    private void registerBerry(String id, PlantType type, PlantData data, String berryname, String bushname) {
+        Berry berry = new Berry(id, type, data);
+        main.saplings.add(new CustomItem(Material.SAPLING, bushname, 0));
+        main.berries.add(berry);
+
+        new SlimefunItem(main.category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LONG_GRASS, "&7Выпадение с травы", 1)),
+                new ItemStack[]{null, null, null, null, new CustomItem(Material.LONG_GRASS, 1), null, null, null, null})
+                .register();
+
+        new Plant(main.category_plants, new CustomItem(getSkull(Material.NETHER_STALK, data.getTexture()), berryname), id, new RecipeType(new CustomItem(Material.LEAVES, "&7Добывается с определённого куста", 0)), true,
+                new ItemStack[]{null, null, null, null, getItem(id + "_BUSH"), null, null, null, null})
+                .register();
+    }
+}
