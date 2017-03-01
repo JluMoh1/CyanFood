@@ -4,3 +4,4 @@ CyanFood.iml
 *.jar
 *.class
 *.MF
+.out/*
