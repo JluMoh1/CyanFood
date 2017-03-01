@@ -36,7 +36,7 @@ public class Main extends JavaPlugin {
             plantListener = new PlantListener(this);
             foodListener = new FoodListener(this);
         } catch (Exception ex) {
-            server.broadcastMessage("Ошибка запуска CyanFood " + ex.getLocalizedMessage());
+            server.broadcastMessage("Ошибка запуска CyanFood: " + ex.toString());
         }
     }
 

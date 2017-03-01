@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.SkullType;
 import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -23,9 +24,11 @@ import java.util.Random;
 
 public class PlantListener implements Listener {
     private final Main main;
+    private final Configuration config;
 
     public PlantListener(Main main) {
         this.main = main;
+        this.config = main.config;
         main.server.getPluginManager().registerEvents(this, main);
     }
 
@@ -68,7 +71,7 @@ public class PlantListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHarvest(BlockBreakEvent e) {
         if (e.getBlock().getType() == Material.LONG_GRASS) {
-            if (CSCoreLib.randomizer().nextInt(100) < 6)
+            if (CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.hand"))
                 e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
         } else {
             ItemStack item = harvestPlant(e.getBlock());
