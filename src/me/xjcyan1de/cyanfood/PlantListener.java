@@ -1,19 +1,25 @@
 package me.xjcyan1de.cyanfood;
 
-import me.mrCookieSlime.CSCoreLibPlugin.events.ItemUseEvent;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.InvUtils;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.Item.CustomItem;
+import me.mrCookieSlime.CSCoreLibPlugin.CSCoreLib;
+import me.mrCookieSlime.CSCoreLibPlugin.general.World.CustomSkull;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
-import org.bukkit.Bukkit;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
+import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.SkullType;
+import org.bukkit.block.Block;
+import org.bukkit.block.Skull;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
 
 public class PlantListener implements Listener {
     private final Main main;
@@ -23,59 +29,94 @@ public class PlantListener implements Listener {
         main.server.getPluginManager().registerEvents(this, main);
     }
 
-    @EventHandler(priority= EventPriority.HIGH)
-    public void onUse(final ItemUseEvent e) {
-        if (e.getPlayer().getFoodLevel() >= 20) return;
+    @EventHandler
+    public void onGrow(StructureGrowEvent e) {
+        SlimefunItem item = BlockStorage.check(e.getLocation().getBlock());
+        if (item != null) {
+            e.setCancelled(true);
+            main.berries.forEach(berry -> {
+                if (item.getName().equalsIgnoreCase(berry.toBush())) {
+                    BlockStorage.store(e.getLocation().getBlock(), berry.getItem());
+                    switch (berry.getType()) {
+                        case BUSH: {
+                            e.getLocation().getBlock().setType(Material.LEAVES);
+                            e.getLocation().getBlock().setData(berry.getData().toByte());
+                            break;
+                        }
+                        default: {
+                            e.getLocation().getBlock().setType(Material.SKULL);
+                            Skull s = (Skull) e.getLocation().getBlock().getState();
+                            s.setSkullType(SkullType.PLAYER);
+                            s.setRotation(main.bf[new Random().nextInt(main.bf.length)]);
+                            s.setRawData((byte) 1);
+                            s.update();
 
-        EquipmentSlot hand = e.getParentEvent().getHand();
-
-        switch (hand) {
-            case HAND: {
-                SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
-                if (item != null) {
-                    if (item instanceof Plant) {
-                        if (((Plant) item).isEdible()) {
-                            ((Plant) item).restoreHunger(e.getPlayer());
-                            e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInMainHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInMainHand(), 1)), 0L);
+                            try {
+                                CustomSkull.setSkull(e.getLocation().getBlock(), berry.getData().getTexture());
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                            break;
                         }
                     }
+                    e.getWorld().playEffect(e.getLocation(), Effect.STEP_SOUND, Material.LEAVES);
                 }
-                break;
-            }
-            case OFF_HAND: {
-                SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
-                if (item != null) {
-                    if (item instanceof Plant) {
-                        if (((Plant) item).isEdible()) {
-                            ((Plant) item).restoreHunger(e.getPlayer());
-                            e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-                            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> e.getPlayer().getInventory().setItemInOffHand(InvUtils.decreaseItem(e.getPlayer().getInventory().getItemInOffHand(), 1)), 0L);
-                        }
-                    }
-                }
-                break;
-            }
+            });
         }
     }
 
-    @EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
-    public void onPlace(BlockPlaceEvent e) {
-        SlimefunItem item = SlimefunItem.getByItem(e.getItemInHand());
-        if (item != null && (item instanceof Plant) && e.getItemInHand().getType() == Material.SKULL_ITEM) e.setCancelled(true);
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onHarvest(BlockBreakEvent e) {
+        if (e.getBlock().getType() == Material.LONG_GRASS) {
+            if (CSCoreLib.randomizer().nextInt(100) < 6)
+                e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
+        } else {
+            ItemStack item = harvestPlant(e.getBlock());
+            if (item != null) {
+                e.setCancelled(true);
+                e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), item);
+            }
+        }
     }
 
     @EventHandler
-    public void onEquip(InventoryClickEvent e) {
-        if (e.getInventory().getType().equals(InventoryType.CRAFTING)) {
-            SlimefunItem item = SlimefunItem.getByItem(e.getCurrentItem());
-            if (item != null && item instanceof Plant) {
-                if (e.isShiftClick() && e.getSlotType() != InventoryType.SlotType.ARMOR) e.setCancelled(true);
-            }
-            SlimefunItem item2 = SlimefunItem.getByItem(e.getCursor());
-            if (item2 != null && item2 instanceof Plant) {
-                if (e.getSlotType() == InventoryType.SlotType.ARMOR) e.setCancelled(true);
-            }
+    public void onInteract(PlayerInteractEvent e) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        ItemStack item = harvestPlant(e.getClickedBlock());
+        if (item != null ) {
+            e.getClickedBlock().getWorld().playEffect(e.getClickedBlock().getLocation(), Effect.STEP_SOUND, Material.LEAVES);
+            e.getClickedBlock().getWorld().dropItemNaturally(e.getClickedBlock().getLocation(), item);
         }
+    }
+
+    @EventHandler
+    public void onDecay(LeavesDecayEvent e) {
+        ItemStack item = BlockStorage.retrieve(e.getBlock());
+        if (item != null) {
+            e.setCancelled(true);
+            e.getBlock().setType(Material.AIR);
+            e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), item);
+        }
+    }
+
+    public ItemStack harvestPlant(Block block) {
+        final ItemStack[] itemstack = new ItemStack[1];
+        SlimefunItem item = BlockStorage.check(block);
+        if (item != null) {
+            main.berries.forEach(berry -> {
+                if (item.getName().equalsIgnoreCase(berry.getName())) {
+                    switch (berry.getType()) {
+                        default: {
+                            block.setType(Material.SAPLING);
+                            block.setData((byte) 0);
+                            itemstack[0] = berry.getItem();
+                            BlockStorage.store(block, berry.toBush());
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        return itemstack[0];
     }
 }

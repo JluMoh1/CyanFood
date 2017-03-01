@@ -7,10 +7,14 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem.getItem;
 
@@ -19,7 +23,12 @@ public class Main extends JavaPlugin {
     public FileConfiguration config;
     public String prefix;
     public Category category_plants, category_drinks, category_food;
+    public List<ItemStack> saplings;
+    public List<Berry> berries;
     public PlantListener plantListener;
+    public FoodListener foodListener;
+    public Berry berry;
+    public BlockFace[] bf = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST};
 
     public ItemStack getSkull(MaterialData material, String texture) {
         try {
@@ -43,8 +52,11 @@ public class Main extends JavaPlugin {
             prefix = config.getString("prefix");
             saveDefaultConfig();
             category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
+            saplings = new ArrayList<ItemStack>();
+            berries = new ArrayList<Berry>();
             registerItems();
             plantListener = new PlantListener(this);
+            foodListener = new FoodListener(this);
         } catch (Exception ex) {
             server.broadcastMessage("Ошибка запуска CyanFood " + ex.getLocalizedMessage());
         }
@@ -60,7 +72,9 @@ public class Main extends JavaPlugin {
     }
 
     public void registerBerry(String id, PlantType type, PlantData data, String berryname, String bushname) {
-        Berry berry = new Berry(id, type, data);
+        berry = new Berry(id, type, data);
+        saplings.add(new CustomItem(Material.SAPLING, bushname, 0));
+        berries.add(berry);
 
         new SlimefunItem(category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LONG_GRASS, "&7Выпадение с травы", 1)),
                 new ItemStack[]{null, null, null, null, new CustomItem(Material.LONG_GRASS, 1), null, null, null, null})
