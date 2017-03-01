@@ -1,6 +1,6 @@
 name: CyanFood
 main: me.xjcyan1de.cyanfood.Main
-version: 0.0.2.1
+version: 0.0.3
 website: https://github.com/XjCyan1de/CyanFood
 authors: [XjCyan1de, kirill3345]
 depend: [CyanMods, CS-CoreLib]

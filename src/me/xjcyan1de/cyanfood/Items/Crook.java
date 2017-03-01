@@ -10,6 +10,7 @@ import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.BlockBreakHandler
 import me.mrCookieSlime.Slimefun.Setup.SlimefunManager;
 import me.xjcyan1de.cyanfood.Main;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +36,11 @@ public class Crook {
             public boolean onBlockBreak(BlockBreakEvent arg0, ItemStack arg1, int arg2, List<ItemStack> arg3) {
                 if (SlimefunManager.isItemSimiliar(arg1, crook.getItem(), true)) {
                     PlayerInventory.damageItemInHand(arg0.getPlayer());
-                    if ((arg0.getBlock().getType() == Material.LEAVES || arg0.getBlock().getType() == Material.LEAVES_2) && CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.crook")) {
+                    Block block = arg0.getBlock();
+                    if ((block.getType() == Material.LEAVES && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() == Material.GRASS) && CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.crook")) {
+                        arg3.add(main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
+                    }
+                    if ((block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2) && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() != Material.GRASS && CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.crook")) {
                         ItemStack sapling = new MaterialData(Material.SAPLING, (byte) ((arg0.getBlock().getData() % 4) + (arg0.getBlock().getType() == Material.LEAVES_2 ? 4: 0))).toItemStack(1);
                         arg3.add(sapling);
                     }

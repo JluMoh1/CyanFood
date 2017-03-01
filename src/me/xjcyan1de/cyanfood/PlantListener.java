@@ -70,7 +70,8 @@ public class PlantListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHarvest(BlockBreakEvent e) {
-        if (e.getBlock().getType() == Material.LONG_GRASS) {
+        Block block = e.getBlock();
+        if (block.getType() == Material.LEAVES && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() == Material.GRASS) {
             if (CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.hand"))
                 e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
         } else {

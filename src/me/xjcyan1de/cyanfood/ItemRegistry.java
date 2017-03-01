@@ -60,8 +60,8 @@ public class ItemRegistry {
             main.saplings.add(new CustomItem(Material.SAPLING, bushname, 0));
             main.berries.add(berry);
 
-            new SlimefunItem(main.category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LONG_GRASS, config.getString("guide.recipe.bush"), 1)),
-                    new ItemStack[]{null, null, null, null, new CustomItem(Material.LONG_GRASS, 1), null, null, null, null})
+            new SlimefunItem(main.category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.bush"), 0)),
+                    new ItemStack[]{null, null, null, null, new CustomItem(Material.LEAVES, 0), null, null, null, null})
                     .register();
 
             new Plant(main.category_plants, new CustomItem(getSkull(Material.NETHER_STALK, data.getTexture()), berryname), id, new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.berry"), 0)), true,
