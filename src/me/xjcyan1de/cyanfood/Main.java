@@ -26,6 +26,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         server = getServer();
         try {
+            getConfig().loadFromString(getConfig().saveToString().replaceAll("&", "§"));
             config = getConfig();
             prefix = config.getString("prefix");
             saveDefaultConfig();
