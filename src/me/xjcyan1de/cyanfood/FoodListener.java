@@ -4,6 +4,7 @@ import me.mrCookieSlime.CSCoreLibPlugin.events.ItemUseEvent;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.InvUtils;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.Item.CustomItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
+import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -33,7 +34,7 @@ public class FoodListener implements Listener {
             case HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
                 if (item != null) {
-                    if (item instanceof Plant) {
+                    if (item instanceof Plant && !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
                         if (((Plant) item).isEdible()) {
                             ((Plant) item).restoreHunger(e.getPlayer());
                             e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
@@ -46,7 +47,7 @@ public class FoodListener implements Listener {
             case OFF_HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
                 if (item != null) {
-                    if (item instanceof Plant) {
+                    if (item instanceof Plant && !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
                         if (((Plant) item).isEdible()) {
                             ((Plant) item).restoreHunger(e.getPlayer());
                             e.getPlayer().getWorld().playSound(e.getPlayer().getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);

@@ -5,3 +5,4 @@ CyanFood.iml
 *.class
 *.MF
 .out/*
+out/production/CyanFood/plugin.yml
