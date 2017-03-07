@@ -18,11 +18,11 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.EquipmentSlot;
 
 public class FoodListener implements Listener {
-    private final Main main;
+    private final CyanFood cyanfood;
 
-    public FoodListener(Main main) {
-        this.main = main;
-        main.server.getPluginManager().registerEvents(this, main);
+    public FoodListener(CyanFood cyanfood) {
+        this.cyanfood = cyanfood;
+        cyanfood.server.getPluginManager().registerEvents(this, cyanfood);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -35,16 +35,18 @@ public class FoodListener implements Listener {
             case HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInMainHand(), 1));
                 if (item != null && item instanceof Plant) {
-                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL"))
-                        eatPlant(e.getPlayer(), item);
+                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
+                        eatPlant(e.getPlayer(), item, EquipmentSlot.HAND);
+                    }
                 }
                 break;
             }
             case OFF_HAND: {
                 SlimefunItem item = SlimefunItem.getByItem(new CustomItem(e.getPlayer().getInventory().getItemInOffHand(), 1));
                 if (item != null && item instanceof Plant) {
-                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL"))
-                        eatPlant(e.getPlayer(), item);
+                    if (e.getClickedBlock() == null || !BlockStorage.check(e.getClickedBlock(), "ANCIENT_PEDESTAL")) {
+                        eatPlant(e.getPlayer(), item, EquipmentSlot.OFF_HAND);
+                    }
                 }
                 break;
             }
@@ -72,11 +74,20 @@ public class FoodListener implements Listener {
         }
     }
 
-    private void eatPlant(Player p, SlimefunItem item) {
+    private void eatPlant(Player p, SlimefunItem item, EquipmentSlot hand) {
         if (((Plant) item).isEdible()) {
             ((Plant) item).restoreHunger(p);
             p.getPlayer().getWorld().playSound(p.getEyeLocation(), Sound.ENTITY_GENERIC_EAT, 1F, 1F);
-            Bukkit.getScheduler().scheduleSyncDelayedTask(main, () -> p.getInventory().setItemInMainHand(InvUtils.decreaseItem(p.getInventory().getItemInMainHand(), 1)), 0L);
+            switch (hand) {
+                case HAND: {
+                    cyanfood.server.getScheduler().scheduleSyncDelayedTask(cyanfood, () -> p.getInventory().setItemInMainHand(InvUtils.decreaseItem(p.getInventory().getItemInMainHand(), 1)), 0L);
+                    break;
+                }
+                case OFF_HAND: {
+                    cyanfood.server.getScheduler().scheduleSyncDelayedTask(cyanfood, () -> p.getInventory().setItemInOffHand(InvUtils.decreaseItem(p.getInventory().getItemInOffHand(), 1)), 0L);
+                    break;
+                }
+            }
         }
     }
 }

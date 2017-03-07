@@ -14,18 +14,18 @@ import org.bukkit.material.MaterialData;
 import static me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem.getItem;
 
 public class ItemRegistry {
-    private final Main main;
+    private final CyanFood cyanfood;
     private final Configuration config;
 
-    public ItemRegistry(Main main) {
-        this.main = main;
-        this.config = main.config;
-        main.category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
+    public ItemRegistry(CyanFood cyanfood) {
+        this.cyanfood = cyanfood;
+        this.config = cyanfood.cfgcyanfood;
+        cyanfood.category_plants = new Category(new CustomItem(getSkull(Material.NETHER_STALK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTVhNWM0YTBhMTZkYWJjOWIxZWM3MmZjODNlMjNhYzE1ZDAxOTdkZTYxYjEzOGJhYmNhN2M4YTI5YzgyMCJ9fX0="), "§7Растения и фрукты", "", "§a> Кликни, чтобы открыть"));
         registerItems();
     }
 
     private void registerItems() {
-        new Crook(main);
+        new Crook(cyanfood);
         registerBerry("GRAPE", PlantType.BUSH);
         registerBerry("BLUEBERRY", PlantType.BUSH);
         registerBerry("ELDERBERRY", PlantType.BUSH);
@@ -57,14 +57,14 @@ public class ItemRegistry {
             String bushname = config.getString("items." + id.toLowerCase() + ".bushname");
             PlantData data = new PlantData(config.getString("items." + id.toLowerCase() + ".texture"));
             Berry berry = new Berry(id, type, data);
-            main.saplings.add(new CustomItem(Material.SAPLING, bushname, 0));
-            main.berries.add(berry);
+            cyanfood.saplings.add(new CustomItem(Material.SAPLING, bushname, 0));
+            cyanfood.berries.add(berry);
 
-            new SlimefunItem(main.category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.bush"), 0)),
+            new SlimefunItem(cyanfood.category_plants, new CustomItem(Material.SAPLING, bushname, 0), id + "_BUSH", new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.bush"), 0)),
                     new ItemStack[]{null, null, null, null, new CustomItem(Material.LEAVES, 0), null, null, null, null})
                     .register();
 
-            new Plant(main.category_plants, new CustomItem(getSkull(Material.NETHER_STALK, data.getTexture()), berryname), id, new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.berry"), 0)), true,
+            new Plant(cyanfood.category_plants, new CustomItem(getSkull(Material.NETHER_STALK, data.getTexture()), berryname), id, new RecipeType(new CustomItem(Material.LEAVES, config.getString("guide.recipe.berry"), 0)), true,
                     new ItemStack[]{null, null, null, null, getItem(id + "_BUSH"), null, null, null, null})
                     .register();
         }

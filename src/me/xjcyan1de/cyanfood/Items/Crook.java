@@ -8,7 +8,7 @@ import me.mrCookieSlime.Slimefun.Lists.RecipeType;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.SlimefunItem;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.handlers.BlockBreakHandler;
 import me.mrCookieSlime.Slimefun.Setup.SlimefunManager;
-import me.xjcyan1de.cyanfood.Main;
+import me.xjcyan1de.cyanfood.CyanFood;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.Configuration;
@@ -19,12 +19,12 @@ import org.bukkit.material.MaterialData;
 import java.util.List;
 
 public class Crook {
-    final private Main main;
+    final private CyanFood cyanfood;
     final private Configuration config;
 
-    public Crook(Main main) {
-        this.main = main;
-        this.config = main.config;
+    public Crook(CyanFood cyanfood) {
+        this.cyanfood = cyanfood;
+        this.config = cyanfood.cfgcyanfood;
         if (config.getBoolean("items.crook.enable")) item();
     }
 
@@ -38,7 +38,7 @@ public class Crook {
                     PlayerInventory.damageItemInHand(arg0.getPlayer());
                     Block block = arg0.getBlock();
                     if ((block.getType() == Material.LEAVES && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() == Material.GRASS) && CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.crook")) {
-                        arg3.add(main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
+                        arg3.add(cyanfood.saplings.get(CSCoreLib.randomizer().nextInt(cyanfood.saplings.size())));
                     }
                     if ((block.getType() == Material.LEAVES || block.getType() == Material.LEAVES_2) && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() != Material.GRASS && CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.crook")) {
                         ItemStack sapling = new MaterialData(Material.SAPLING, (byte) ((arg0.getBlock().getData() % 4) + (arg0.getBlock().getType() == Material.LEAVES_2 ? 4: 0))).toItemStack(1);

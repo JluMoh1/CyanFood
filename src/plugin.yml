@@ -1,5 +1,5 @@
 name: CyanFood
-main: me.xjcyan1de.cyanfood.Main
+main: me.xjcyan1de.cyanfood.CyanFood
 version: 0.0.3
 website: https://github.com/XjCyan1de/CyanFood
 authors: [XjCyan1de, kirill3345]

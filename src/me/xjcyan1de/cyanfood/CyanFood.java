@@ -4,16 +4,17 @@ import me.mrCookieSlime.Slimefun.Objects.Category;
 import org.bukkit.Server;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main extends JavaPlugin {
+public class CyanFood extends JavaPlugin {
     public Server server;
-    public FileConfiguration config;
-    public String prefix;
+    public FileConfiguration cfgcyanfood;
     public Category category_plants;
     public List<ItemStack> saplings;
     public List<Berry> berries;
@@ -26,10 +27,8 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         server = getServer();
         try {
-            getConfig().loadFromString(getConfig().saveToString().replaceAll("&", "§"));
-            config = getConfig();
-            prefix = config.getString("prefix");
-            saveDefaultConfig();
+            cfgcyanfood = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "cfgcyanfood.yml"));
+            cfgcyanfood.loadFromString(getConfig().saveToString().replaceAll("&", "§"));
             saplings = new ArrayList<ItemStack>();
             berries = new ArrayList<Berry>();
             itemRegistry = new ItemRegistry(this);

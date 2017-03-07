@@ -23,13 +23,13 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Random;
 
 public class PlantListener implements Listener {
-    private final Main main;
+    private final CyanFood cyanfood;
     private final Configuration config;
 
-    public PlantListener(Main main) {
-        this.main = main;
-        this.config = main.config;
-        main.server.getPluginManager().registerEvents(this, main);
+    public PlantListener(CyanFood cyanfood) {
+        this.cyanfood = cyanfood;
+        this.config = cyanfood.cfgcyanfood;
+        cyanfood.server.getPluginManager().registerEvents(this, cyanfood);
     }
 
     @EventHandler
@@ -37,7 +37,7 @@ public class PlantListener implements Listener {
         SlimefunItem item = BlockStorage.check(e.getLocation().getBlock());
         if (item != null) {
             e.setCancelled(true);
-            main.berries.forEach(berry -> {
+            cyanfood.berries.forEach(berry -> {
                 if (item.getName().equalsIgnoreCase(berry.toBush())) {
                     BlockStorage.store(e.getLocation().getBlock(), berry.getItem());
                     switch (berry.getType()) {
@@ -50,7 +50,7 @@ public class PlantListener implements Listener {
                             e.getLocation().getBlock().setType(Material.SKULL);
                             Skull s = (Skull) e.getLocation().getBlock().getState();
                             s.setSkullType(SkullType.PLAYER);
-                            s.setRotation(main.bf[new Random().nextInt(main.bf.length)]);
+                            s.setRotation(cyanfood.bf[new Random().nextInt(cyanfood.bf.length)]);
                             s.setRawData((byte) 1);
                             s.update();
 
@@ -73,7 +73,7 @@ public class PlantListener implements Listener {
         Block block = e.getBlock();
         if (block.getType() == Material.LEAVES && block.getWorld().getBlockAt(block.getX(), block.getY()-1, block.getZ()).getType() == Material.GRASS) {
             if (CSCoreLib.randomizer().nextInt(100) < config.getInt("chances.hand"))
-                e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), main.saplings.get(CSCoreLib.randomizer().nextInt(main.saplings.size())));
+                e.getBlock().getWorld().dropItemNaturally(e.getBlock().getLocation(), cyanfood.saplings.get(CSCoreLib.randomizer().nextInt(cyanfood.saplings.size())));
         } else {
             ItemStack item = harvestPlant(e.getBlock());
             if (item != null) {
@@ -107,7 +107,7 @@ public class PlantListener implements Listener {
         final ItemStack[] itemstack = new ItemStack[1];
         SlimefunItem item = BlockStorage.check(block);
         if (item != null) {
-            main.berries.forEach(berry -> {
+            cyanfood.berries.forEach(berry -> {
                 if (item.getName().equalsIgnoreCase(berry.getName())) {
                     switch (berry.getType()) {
                         default: {
